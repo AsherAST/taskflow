@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  boards       Board[]
+
+  @@map("users")
+}
+
+model Board {
+  id        String   @id @default(cuid())
+  title     String
+  ownerId   String
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  columns   Column[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("boards")
+}
+
+model Column {
+  id       String  @id @default(cuid())
+  title    String
+  boardId  String
+  board    Board   @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  position Int
+  tasks    Task[]
+
+  @@map("columns")
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  columnId    String
+  column      Column   @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  position    Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("tasks")
+}

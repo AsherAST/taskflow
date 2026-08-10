@@ -145,6 +145,17 @@ export default function AuthForm({ mode }: { mode: Mode }) {
           {isRegister ? "Inicia sesión" : "Regístrate"}
         </Link>
       </p>
+
+      {!isRegister && (
+        <p className="mt-3 text-center text-sm text-zinc-600 dark:text-zinc-400">
+          <Link
+            href="/forgot-password"
+            className="font-semibold text-indigo-600 hover:underline dark:text-indigo-400"
+          >
+            ¿Olvidaste tu contraseña?
+          </Link>
+        </p>
+      )}
     </div>
   );
 }

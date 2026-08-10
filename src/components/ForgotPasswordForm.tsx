@@ -43,8 +43,8 @@ export default function ForgotPasswordForm() {
           Recuperar contraseña
         </h1>
         <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-          Si existe una cuenta con ese correo, recibirás un código de 6 dígitos
-          para restablecer tu contraseña.
+          Revisa tu correo electrónico. Recibirás un código de 6 dígitos para
+          restablecer tu contraseña.
         </p>
         <button
           type="button"

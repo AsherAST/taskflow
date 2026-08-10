@@ -4,7 +4,10 @@ import {
   registerSchema,
   loginSchema,
   boardSchema,
+  updateBoardSchema,
   columnSchema,
+  updateColumnSchema,
+  moveColumnSchema,
   taskSchema,
   moveTaskSchema,
   updateTaskSchema,
@@ -72,6 +75,24 @@ describe("boardSchema", () => {
   });
 });
 
+describe("updateBoardSchema", () => {
+  it("requiere boardId", () => {
+    expect(updateBoardSchema.safeParse({ title: "Nuevo" }).success).toBe(false);
+  });
+
+  it("rechaza título vacío", () => {
+    expect(
+      updateBoardSchema.safeParse({ boardId: "b1", title: " " }).success,
+    ).toBe(false);
+  });
+
+  it("acepta datos válidos", () => {
+    expect(
+      updateBoardSchema.safeParse({ boardId: "b1", title: "Nuevo" }).success,
+    ).toBe(true);
+  });
+});
+
 describe("columnSchema", () => {
   it("requiere boardId", () => {
     expect(columnSchema.safeParse({ title: "Pendiente" }).success).toBe(false);
@@ -80,6 +101,51 @@ describe("columnSchema", () => {
   it("acepta datos válidos", () => {
     expect(
       columnSchema.safeParse({ title: "Pendiente", boardId: "b1" }).success,
+    ).toBe(true);
+  });
+});
+
+describe("updateColumnSchema", () => {
+  it("requiere columnId", () => {
+    expect(updateColumnSchema.safeParse({ title: "Hecho" }).success).toBe(false);
+  });
+
+  it("rechaza título vacío", () => {
+    expect(
+      updateColumnSchema.safeParse({ columnId: "c1", title: "" }).success,
+    ).toBe(false);
+  });
+
+  it("acepta datos válidos", () => {
+    expect(
+      updateColumnSchema.safeParse({ columnId: "c1", title: "En curso" })
+        .success,
+    ).toBe(true);
+  });
+});
+
+describe("moveColumnSchema", () => {
+  it("requiere boardId y columnId", () => {
+    expect(moveColumnSchema.safeParse({ position: 1 }).success).toBe(false);
+  });
+
+  it("rechaza posición negativa", () => {
+    expect(
+      moveColumnSchema.safeParse({
+        columnId: "c1",
+        boardId: "b1",
+        position: -1,
+      }).success,
+    ).toBe(false);
+  });
+
+  it("acepta datos válidos", () => {
+    expect(
+      moveColumnSchema.safeParse({
+        columnId: "c1",
+        boardId: "b1",
+        position: 2,
+      }).success,
     ).toBe(true);
   });
 });

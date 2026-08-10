@@ -7,6 +7,8 @@ import NewColumnForm from "@/components/NewColumnForm";
 import {
   createColumn,
   deleteColumn,
+  updateColumn,
+  moveColumn,
 } from "@/actions/columns";
 import {
   createTask,
@@ -42,11 +44,17 @@ export default function KanbanBoard({
     taskId: string;
     position: "top" | "bottom";
   } | null>(null);
+  const [dragColumnId, setDragColumnId] = useState<string | null>(null);
 
   function clearDragState() {
     setDragTaskId(null);
     setDragOverColumnId(null);
     setDropIndicator(null);
+  }
+
+  function clearColumnDragState() {
+    setDragColumnId(null);
+    setDragOverColumnId(null);
   }
 
   function handleAddTask(columnId: string, title: string) {
@@ -121,6 +129,54 @@ export default function KanbanBoard({
     });
   }
 
+  function handleUpdateColumn(columnId: string, title: string) {
+    void updateColumn({ columnId, title }).then((result) => {
+      if (result.ok) {
+        setColumns((prev) =>
+          prev.map((column) =>
+            column.id === columnId ? { ...column, title } : column,
+          ),
+        );
+      } else {
+        router.refresh();
+      }
+    });
+  }
+
+  function handleColumnDragStart(columnId: string) {
+    setDragColumnId(columnId);
+  }
+
+  function handleColumnDragOver(columnId: string) {
+    if (!dragColumnId || dragColumnId === columnId) return;
+    setDragOverColumnId(columnId);
+  }
+
+  function handleColumnDrop(columnId: string, index: number) {
+    const draggedId = dragColumnId;
+    clearColumnDragState();
+    if (!draggedId || draggedId === columnId) return;
+
+    const currentIndex = columns.findIndex(
+      (column) => column.id === draggedId,
+    );
+    if (currentIndex === -1) return;
+
+    setColumns((prev) => {
+      const next = prev.filter((column) => column.id !== draggedId);
+      next.splice(Math.max(0, Math.min(index, next.length)), 0, prev[currentIndex]);
+      return next;
+    });
+
+    void moveColumn({
+      columnId: draggedId,
+      boardId,
+      position: index,
+    }).then((result) => {
+      if (!result.ok) router.refresh();
+    });
+  }
+
   function handleDropTask(columnId: string, index: number) {
     const taskId = dragTaskId;
     clearDragState();
@@ -178,13 +234,15 @@ export default function KanbanBoard({
 
   return (
     <div className="flex items-start gap-4 overflow-x-auto pb-4">
-      {columns.map((column) => (
+      {columns.map((column, index) => (
         <ColumnView
           key={column.id}
           column={column}
+          index={index}
           dragTaskId={dragTaskId}
           dragOverColumnId={dragOverColumnId}
           dropIndicator={dropIndicator}
+          dragColumnId={dragColumnId}
           onDragStart={(taskId) => setDragTaskId(taskId)}
           onDragEnd={clearDragState}
           onDragOverTask={(taskId, position) =>
@@ -192,9 +250,14 @@ export default function KanbanBoard({
           }
           onDragOverColumn={(columnId) => setDragOverColumnId(columnId)}
           onDropTask={handleDropTask}
+          onColumnDragStart={handleColumnDragStart}
+          onColumnDragEnd={clearColumnDragState}
+          onColumnDragOver={handleColumnDragOver}
+          onColumnDrop={handleColumnDrop}
           onAddTask={handleAddTask}
           onUpdateTask={handleUpdateTask}
           onDeleteTask={handleDeleteTask}
+          onUpdateColumn={handleUpdateColumn}
           onDeleteColumn={handleDeleteColumn}
         />
       ))}

@@ -104,6 +104,7 @@ export default function TaskCard({
               onChange={(event) => setTitle(event.target.value)}
               required
               maxLength={120}
+              aria-label="Título de la tarea"
               className="w-full rounded-lg border border-zinc-300 px-2 py-1.5 text-sm text-zinc-900 outline-none focus:border-indigo-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white"
             />
             <textarea

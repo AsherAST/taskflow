@@ -8,10 +8,10 @@ Gestor de tareas tipo **Kanban** construido con Next.js 16, React 19, TypeScript
 
 - **Autenticación**: registro, inicio de sesión y cierre de sesión con contraseñas hasheadas (bcryptjs) y sesiones JWT firmadas con [jose](https://github.com/panva/jose) en cookies httpOnly.
 - **Recuperación de contraseña**: enlace "¿Olvidaste tu contraseña?" con token de un solo uso (expira en 1 h). En modo demo el enlace de recuperación se muestra en pantalla.
-- **Tableros**: crear y eliminar tableros, cada uno propiedad del usuario (autorización por ownership, 404 si no te pertenece).
-- **Columnas**: crear y eliminar columnas dentro de un tablero.
+- **Tableros**: crear, editar (título inline) y eliminar tableros, cada uno propiedad del usuario (autorización por ownership, 404 si no te pertenece).
+- **Columnas**: crear, editar (título inline) y eliminar columnas dentro de un tablero.
 - **Tareas**: crear, editar (título + descripción) y eliminar tareas.
-- **Drag & drop**: mover tareas entre columnas y reordenarlas con HTML5 DnD, con indicador visual de posición y actualización optimista.
+- **Drag & drop**: mover tareas entre columnas, reordenarlas y reordenar columnas con HTML5 DnD, con indicador visual de posición y actualización optimista.
 - **Validación** de entrada con **Zod** en el servidor (API y Server Actions).
 - **Bilingüe**: interfaz en español (la de producción se puede adaptar a ES/EN).
 

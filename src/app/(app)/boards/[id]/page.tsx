@@ -3,6 +3,7 @@ import Link from "next/link";
 import { db } from "@/lib/db";
 import { requireUser } from "@/lib/session";
 import KanbanBoard from "@/components/KanbanBoard";
+import BoardTitle from "@/components/BoardTitle";
 
 export const metadata = { title: "Tablero — TaskFlow" };
 
@@ -41,9 +42,7 @@ export default async function BoardPage({
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <div className="mb-6 flex items-center justify-between gap-3">
-        <h1 className="text-3xl font-bold text-zinc-950 dark:text-white">
-          {board.title}
-        </h1>
+        <BoardTitle boardId={board.id} initialTitle={board.title} />
         <Link
           href="/boards"
           className="rounded-full border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"

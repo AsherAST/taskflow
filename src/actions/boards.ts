@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { boardSchema } from "@/lib/validators";
+import { boardSchema, updateBoardSchema } from "@/lib/validators";
 import { db } from "@/lib/db";
 import { getSessionUserId } from "@/lib/session";
 import { boardIfOwnedBy } from "@/lib/board-access";
@@ -35,6 +35,33 @@ export async function createBoard(input: {
 
   revalidatePath("/boards");
   return { ok: true, boardId: board.id };
+}
+
+export async function updateBoard(input: {
+  boardId: string;
+  title: string;
+}): Promise<ActionResult> {
+  const parsed = updateBoardSchema.safeParse(input);
+  if (!parsed.success) {
+    return {
+      ok: false,
+      error: parsed.error.issues[0]?.message ?? "Datos inválidos",
+    };
+  }
+
+  const userId = await getSessionUserId();
+  if (!userId) return { ok: false, error: "No autorizado" };
+
+  const board = await boardIfOwnedBy(parsed.data.boardId, userId);
+  if (!board) return { ok: false, error: "Tablero no encontrado" };
+
+  await db.board.update({
+    where: { id: board.id },
+    data: { title: parsed.data.title },
+  });
+
+  revalidatePath(`/boards/${board.id}`);
+  return { ok: true };
 }
 
 export async function deleteBoard(input: {

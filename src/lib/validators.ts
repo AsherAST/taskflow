@@ -24,9 +24,25 @@ export const boardSchema = z.object({
   title: z.string().trim().min(1, "El título es obligatorio").max(60),
 });
 
+export const updateBoardSchema = z.object({
+  boardId: z.string().min(1, "Falta el tablero"),
+  title: z.string().trim().min(1, "El título es obligatorio").max(60),
+});
+
 export const columnSchema = z.object({
   title: z.string().trim().min(1, "El título es obligatorio").max(60),
   boardId: z.string().min(1, "Falta el tablero"),
+});
+
+export const updateColumnSchema = z.object({
+  columnId: z.string().min(1, "Falta la columna"),
+  title: z.string().trim().min(1, "El título es obligatorio").max(60),
+});
+
+export const moveColumnSchema = z.object({
+  columnId: z.string().min(1),
+  boardId: z.string().min(1),
+  position: z.number().int().min(0),
 });
 
 export const taskSchema = z.object({

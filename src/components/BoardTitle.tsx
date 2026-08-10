@@ -66,7 +66,7 @@ export default function BoardTitle({
           setEditing(true);
         }}
         aria-label={`Editar tablero ${initialTitle}`}
-        className="rounded-full px-2 py-1 text-sm font-medium text-zinc-400 opacity-0 transition hover:bg-zinc-100 hover:text-zinc-700 group-hover:opacity-100 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+        className="rounded-full px-2 py-1 text-sm font-medium text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
       >
         ✎
       </button>

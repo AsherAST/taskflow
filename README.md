@@ -4,7 +4,7 @@ Gestor de tareas tipo **Kanban** construido con Next.js 16, React 19, TypeScript
 
 > Proyecto en desarrollo para el portafolio de **Damian Espinosa** ([portafolio](https://github.com/AsherAST/portafolio)).
 
-## ✨ Funcionalidades
+## Funcionalidades
 
 - **Autenticación**: registro, inicio de sesión y cierre de sesión con contraseñas hasheadas (bcryptjs) y sesiones JWT firmadas con [jose](https://github.com/panva/jose) en cookies httpOnly.
 - **Recuperación de contraseña**: enlace "¿Olvidaste tu contraseña?" con token de un solo uso (expira en 1 h). En modo demo el enlace de recuperación se muestra en pantalla.
@@ -15,7 +15,7 @@ Gestor de tareas tipo **Kanban** construido con Next.js 16, React 19, TypeScript
 - **Validación** de entrada con **Zod** en el servidor (API y Server Actions).
 - **Bilingüe**: interfaz en español (la de producción se puede adaptar a ES/EN).
 
-## 🛠 Stack
+## Stack
 
 | Área | Tecnología |
 |---|---|
@@ -25,16 +25,16 @@ Gestor de tareas tipo **Kanban** construido con Next.js 16, React 19, TypeScript
 | Seguridad | bcryptjs (hash) · jose (JWT) · cookies httpOnly · Zod |
 | Testing | Vitest + Testing Library · Playwright (e2e) |
 
-## 🚀 Demo
+## Demo
 
 - **Sitio en vivo**: _pendiente de deploy_ (se añadirá la URL de Vercel).
 - **Repositorio**: <https://github.com/AsherAST/taskflow>
 
-## 📸 Capturas
+## Capturas
 
 _Se añadirán capturas de pantalla del tablero, login y listado._
 
-## 🧑‍💻 Cómo correrlo localmente
+## Cómo correrlo localmente
 
 Requisitos: **Node.js 20+** y npm.
 
@@ -58,7 +58,7 @@ npm run dev
 
 Usuario demo del seed: `demo@taskflow.app` / `demo1234`.
 
-## 🧪 Tests
+## Tests
 
 ```bash
 npm test            # tests unitarios (Vitest)
@@ -66,7 +66,7 @@ npm run test:coverage
 npm run test:e2e    # tests end-to-end (Playwright, requiere `npm run dev` o lo inicia solo)
 ```
 
-## 📦 Scripts útiles
+## Scripts útiles
 
 | Comando | Descripción |
 |---|---|
@@ -77,7 +77,7 @@ npm run test:e2e    # tests end-to-end (Playwright, requiere `npm run dev` o lo 
 | `npm run db:seed` | Rellena la BD con datos demo |
 | `npm run db:studio` | Prisma Studio (explora la BD) |
 
-## 🗂 Estructura relevante
+## Estructura relevante
 
 ```
 src/
@@ -94,13 +94,13 @@ prisma/
 └── seed.ts             # Datos demo
 ```
 
-## 🧠 Conceptos que demuestra
+## Conceptos que demuestra
 
 - Relaciones en base de datos (1:N) y modelado Kanban (el estado de una tarea es su columna).
 - Autenticación de cero: hashing (bcryptjs), tokens (jose), cookies httpOnly y protección de rutas.
 - Server Actions + revalidación, API Routes y validación con Zod.
 - UI optimista con drag & drop nativo (sin librerías).
 
-## 📄 Licencia
+## Licencia
 
 Proyecto educativo de portafolio.

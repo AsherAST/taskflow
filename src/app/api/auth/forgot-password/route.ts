@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 import { forgotPasswordSchema } from "@/lib/validators";
 import { db } from "@/lib/db";
 import {
-  createPasswordResetToken,
-  getAppOrigin,
-  buildResetUrl,
+  createPasswordResetCode,
+  canResendCode,
 } from "@/lib/password-reset";
+import { sendPasswordResetCode } from "@/lib/mailer";
 
 export const dynamic = "force-dynamic";
 
@@ -22,11 +22,14 @@ export async function POST(request: Request) {
   const { email } = parsed.data;
   const user = await db.user.findUnique({ where: { email } });
 
-  let resetUrl: string | undefined;
-  if (user) {
-    const token = await createPasswordResetToken(user.id);
-    resetUrl = buildResetUrl(getAppOrigin(), token);
+  if (user && (await canResendCode(user.id))) {
+    const code = await createPasswordResetCode(user.id);
+    try {
+      await sendPasswordResetCode(email, code);
+    } catch (err) {
+      console.error("FORGOT-PASSWORD-EMAIL-ERROR", err);
+    }
   }
 
-  return NextResponse.json({ ok: true, resetUrl });
+  return NextResponse.json({ ok: true });
 }

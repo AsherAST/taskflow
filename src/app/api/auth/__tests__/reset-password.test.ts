@@ -14,7 +14,7 @@ vi.mock("@/lib/db", () => ({
 }));
 
 vi.mock("@/lib/password-reset", () => ({
-  getValidResetToken: (...args: unknown[]) => getValidMock(...args),
+  getValidChangeToken: (...args: unknown[]) => getValidMock(...args),
   consumeResetToken: (...args: unknown[]) => consumeMock(...args),
 }));
 
@@ -33,12 +33,12 @@ describe("POST /api/auth/reset-password", () => {
     vi.clearAllMocks();
   });
 
-  it("actualiza la contraseña y consume el token (200)", async () => {
+  it("actualiza la contraseña y consume el changeToken (200)", async () => {
     getValidMock.mockResolvedValue({ id: "rt1", userId: "u1" });
     updateMock.mockResolvedValue({ id: "u1" });
 
     const res = await POST(
-      jsonRequest({ token: "tok123", password: "nueva12345" }),
+      jsonRequest({ changeToken: "tok123", password: "nueva12345" }),
     );
     expect(res.status).toBe(200);
     expect(updateMock).toHaveBeenCalledWith(
@@ -50,17 +50,17 @@ describe("POST /api/auth/reset-password", () => {
     expect(consumeMock).toHaveBeenCalledWith("rt1");
   });
 
-  it("rechaza token inválido o expirado (400)", async () => {
+  it("rechaza changeToken inválido o expirado (400)", async () => {
     getValidMock.mockResolvedValue(null);
     const res = await POST(
-      jsonRequest({ token: "malo", password: "nueva12345" }),
+      jsonRequest({ changeToken: "malo", password: "nueva12345" }),
     );
     expect(res.status).toBe(400);
     expect(updateMock).not.toHaveBeenCalled();
   });
 
   it("rechaza contraseña corta (400)", async () => {
-    const res = await POST(jsonRequest({ token: "tok", password: "123" }));
+    const res = await POST(jsonRequest({ changeToken: "tok", password: "123" }));
     expect(res.status).toBe(400);
     expect(getValidMock).not.toHaveBeenCalled();
   });

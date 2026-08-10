@@ -3,7 +3,7 @@ import { resetPasswordSchema } from "@/lib/validators";
 import { db } from "@/lib/db";
 import { hashPassword } from "@/lib/password";
 import {
-  getValidResetToken,
+  getValidChangeToken,
   consumeResetToken,
 } from "@/lib/password-reset";
 
@@ -19,8 +19,8 @@ export async function POST(request: Request) {
     );
   }
 
-  const { token, password } = parsed.data;
-  const record = await getValidResetToken(token);
+  const { changeToken, password } = parsed.data;
+  const record = await getValidChangeToken(changeToken);
   if (!record) {
     return NextResponse.json(
       { error: "El enlace es inválido o ya expiró." },

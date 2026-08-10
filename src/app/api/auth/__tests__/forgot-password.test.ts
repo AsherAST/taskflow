@@ -1,10 +1,13 @@
 // @vitest-environment node
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { findUniqueMock, createTokenMock } = vi.hoisted(() => ({
-  findUniqueMock: vi.fn(),
-  createTokenMock: vi.fn(),
-}));
+const { findUniqueMock, createCodeMock, canResendMock, sendMailMock } =
+  vi.hoisted(() => ({
+    findUniqueMock: vi.fn(),
+    createCodeMock: vi.fn(),
+    canResendMock: vi.fn(),
+    sendMailMock: vi.fn(),
+  }));
 
 vi.mock("@/lib/db", () => ({
   db: {
@@ -13,9 +16,12 @@ vi.mock("@/lib/db", () => ({
 }));
 
 vi.mock("@/lib/password-reset", () => ({
-  createPasswordResetToken: (...args: unknown[]) => createTokenMock(...args),
-  getAppOrigin: () => "http://localhost",
-  buildResetUrl: (_base: string, token: string) => `http://localhost/reset-password/${token}`,
+  createPasswordResetCode: (...args: unknown[]) => createCodeMock(...args),
+  canResendCode: (...args: unknown[]) => canResendMock(...args),
+}));
+
+vi.mock("@/lib/mailer", () => ({
+  sendPasswordResetCode: (...args: unknown[]) => sendMailMock(...args),
 }));
 
 import { POST } from "@/app/api/auth/forgot-password/route";
@@ -33,24 +39,35 @@ describe("POST /api/auth/forgot-password", () => {
     vi.clearAllMocks();
   });
 
-  it("crea token y devuelve el enlace si el usuario existe (200)", async () => {
+  it("crea código y envía el email si el usuario existe (200)", async () => {
     findUniqueMock.mockResolvedValue({ id: "u1", email: "ana@example.com" });
-    createTokenMock.mockResolvedValue("tok123");
+    canResendMock.mockResolvedValue(true);
+    createCodeMock.mockResolvedValue("123456");
 
     const res = await POST(jsonRequest({ email: "ana@example.com" }));
     expect(res.status).toBe(200);
     const body = await res.json();
-    expect(createTokenMock).toHaveBeenCalledWith("u1");
-    expect(body.resetUrl).toBe("http://localhost/reset-password/tok123");
+    expect(createCodeMock).toHaveBeenCalledWith("u1");
+    expect(sendMailMock).toHaveBeenCalledWith("ana@example.com", "123456");
+    expect(body.resetUrl).toBeUndefined();
   });
 
-  it("responde ok sin enlace si el usuario no existe (200)", async () => {
+  it("responde ok sin enviar si el usuario no existe (200)", async () => {
     findUniqueMock.mockResolvedValue(null);
     const res = await POST(jsonRequest({ email: "nadie@example.com" }));
     expect(res.status).toBe(200);
-    const body = await res.json();
-    expect(createTokenMock).not.toHaveBeenCalled();
-    expect(body.resetUrl).toBeUndefined();
+    expect(createCodeMock).not.toHaveBeenCalled();
+    expect(sendMailMock).not.toHaveBeenCalled();
+  });
+
+  it("no reenvía durante el cooldown", async () => {
+    findUniqueMock.mockResolvedValue({ id: "u1", email: "ana@example.com" });
+    canResendMock.mockResolvedValue(false);
+
+    const res = await POST(jsonRequest({ email: "ana@example.com" }));
+    expect(res.status).toBe(200);
+    expect(createCodeMock).not.toHaveBeenCalled();
+    expect(sendMailMock).not.toHaveBeenCalled();
   });
 
   it("rechaza correo inválido (400)", async () => {

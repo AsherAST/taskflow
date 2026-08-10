@@ -10,6 +10,7 @@ test("mueve una tarea entre columnas con drag & drop", async ({ page }) => {
   await page.getByRole("button", { name: "Crear cuenta" }).click();
   await expect(page).toHaveURL(/\/boards$/);
 
+  await page.getByRole("button", { name: "+ Nuevo tablero" }).click();
   await page.getByLabel("Título del tablero").fill("Tablero DnD");
   await page.getByRole("button", { name: "Crear" }).click();
   await expect(page).toHaveURL(/\/boards\/.+/);
@@ -46,6 +47,7 @@ test("edita el título de una columna", async ({ page }) => {
   await page.getByRole("button", { name: "Crear cuenta" }).click();
   await expect(page).toHaveURL(/\/boards$/);
 
+  await page.getByRole("button", { name: "+ Nuevo tablero" }).click();
   await page.getByLabel("Título del tablero").fill("Tablero EditCol");
   await page.getByRole("button", { name: "Crear" }).click();
   await expect(page).toHaveURL(/\/boards\/.+/);
@@ -72,6 +74,7 @@ test("edita el título del tablero", async ({ page }) => {
   await page.getByRole("button", { name: "Crear cuenta" }).click();
   await expect(page).toHaveURL(/\/boards$/);
 
+  await page.getByRole("button", { name: "+ Nuevo tablero" }).click();
   await page.getByLabel("Título del tablero").fill("Tablero Original");
   await page.getByRole("button", { name: "Crear" }).click();
   await expect(page).toHaveURL(/\/boards\/.+/);
@@ -94,6 +97,7 @@ test("renombra una tarea", async ({ page }) => {
   await page.getByRole("button", { name: "Crear cuenta" }).click();
   await expect(page).toHaveURL(/\/boards$/);
 
+  await page.getByRole("button", { name: "+ Nuevo tablero" }).click();
   await page.getByLabel("Título del tablero").fill("Tablero EditTask");
   await page.getByRole("button", { name: "Crear" }).click();
   await expect(page).toHaveURL(/\/boards\/.+/);
@@ -128,6 +132,7 @@ test("reordena columnas con drag & drop", async ({ page }) => {
   await page.getByRole("button", { name: "Crear cuenta" }).click();
   await expect(page).toHaveURL(/\/boards$/);
 
+  await page.getByRole("button", { name: "+ Nuevo tablero" }).click();
   await page.getByLabel("Título del tablero").fill("Tablero OrderCol");
   await page.getByRole("button", { name: "Crear" }).click();
   await expect(page).toHaveURL(/\/boards\/.+/);

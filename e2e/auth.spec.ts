@@ -16,6 +16,7 @@ test("registro, crea tablero con columnas y tareas, cierra sesión", async ({
 
   await expect(page).toHaveURL(/\/boards$/);
 
+  await page.getByRole("button", { name: "+ Nuevo tablero" }).click();
   await page.getByLabel("Título del tablero").fill("Mi tablero E2E");
   await page.getByRole("button", { name: "Crear" }).click();
   await expect(page).toHaveURL(/\/boards\/.+/);

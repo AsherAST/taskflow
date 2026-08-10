@@ -132,7 +132,7 @@ export default function TaskCard({
             </div>
           </form>
         ) : (
-          <div className="group">
+          <div>
             <p className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
               {task.title}
             </p>
@@ -141,7 +141,7 @@ export default function TaskCard({
                 {task.description}
               </p>
             )}
-            <div className="mt-2 flex justify-end gap-1 opacity-0 transition group-hover:opacity-100">
+            <div className="mt-2 flex justify-end gap-1">
               <button
                 type="button"
                 onClick={() => {

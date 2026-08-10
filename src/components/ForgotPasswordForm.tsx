@@ -6,7 +6,8 @@ import { useState } from "react";
 export default function ForgotPasswordForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [sent, setSent] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [resetUrl, setResetUrl] = useState<string | null>(null);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -20,7 +21,10 @@ export default function ForgotPasswordForm() {
       body: JSON.stringify({ email: formData.get("email") }),
     });
 
-    const data = (await res.json().catch(() => ({}))) as { error?: string };
+    const data = (await res.json().catch(() => ({}))) as {
+      error?: string;
+      resetUrl?: string;
+    };
     setLoading(false);
 
     if (!res.ok) {
@@ -28,15 +32,40 @@ export default function ForgotPasswordForm() {
       return;
     }
 
-    setSent(true);
+    setResetUrl(data.resetUrl ?? null);
+    setSubmitted(true);
   }
 
-  if (sent) {
+  if (resetUrl) {
     return (
-      <p className="rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700 dark:bg-green-950/40 dark:text-green-400">
-        Si existe una cuenta con ese correo, recibirás un enlace para
-        restablecer tu contraseña.
-      </p>
+      <div className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <h1 className="text-2xl font-bold text-zinc-950 dark:text-white">
+          Recuperar contraseña
+        </h1>
+        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+          Este es tu enlace de recuperación (válido por 1 hora):
+        </p>
+        <a
+          href={resetUrl}
+          className="mt-4 block break-all rounded-lg bg-indigo-600 px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-indigo-700"
+        >
+          {resetUrl}
+        </a>
+      </div>
+    );
+  }
+
+  if (submitted) {
+    return (
+      <div className="w-full max-w-md rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <h1 className="text-2xl font-bold text-zinc-950 dark:text-white">
+          Recuperar contraseña
+        </h1>
+        <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+          Si existe una cuenta con ese correo, revisa el enlace de
+          recuperación.
+        </p>
+      </div>
     );
   }
 
